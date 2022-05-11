@@ -1,9 +1,15 @@
 using LogicLayer;
+using DataLayer.Models;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+var connectionString = builder.Configuration.GetConnectionString("Constr");
+builder.Services.AddDbContext<InsurewaveContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IUser, User>();
 builder.Services.AddScoped<IBuyer, Buyer>();
