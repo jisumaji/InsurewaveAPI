@@ -17,6 +17,14 @@ builder.Services.AddScoped<IBroker, Broker>();
 builder.Services.AddScoped<IInsurer, Insurer>();
 builder.Services.AddScoped<IPolicy, Policy>();
 builder.Services.AddScoped<IRequest, Request>();
+
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+{
+    builder.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+}));
+
 /*services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(30);//You can set Time   
 });*/
@@ -37,6 +45,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 //app.UseSession();
+
+app.UseCors("MyPolicy");
 
 app.UseAuthorization();
 

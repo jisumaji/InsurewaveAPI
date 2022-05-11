@@ -6,11 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace PresentationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MyPolicy")]
+
     public class UserDetailsController : ControllerBase
     {
         private readonly InsurewaveContext _context;
