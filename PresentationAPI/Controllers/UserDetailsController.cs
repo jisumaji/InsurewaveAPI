@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.Models;
 using Microsoft.AspNetCore.Cors;
+using LogicLayer;
 
 namespace PresentationAPI.Controllers
 {
@@ -17,12 +18,46 @@ namespace PresentationAPI.Controllers
     public class UserDetailsController : ControllerBase
     {
         private readonly InsurewaveContext _context;
-
-        public UserDetailsController(InsurewaveContext context)
+        IUser obj;
+        public UserDetailsController(InsurewaveContext context , IUser obj)
         {
             _context = context;
+            this.obj = obj; 
         }
+        //Login Page calls this
+        [HttpGet("{userId}+{password}")]
+        public ActionResult<bool> Login(string userId, string password)
+        {
+            return obj.LoginUser(userId, password);
+        }
+        /*
+ 
+            //Register page
+        [HttpPost]
+        public ActionResult<string> Register(UserDetail userDetail)
+        {
+            obj.AddUser(userDetail);
+            if (userDetail.Role.Equals("insurer"))
+            {
 
+                InsurerDetail insert = new InsurerDetail
+                {
+                    InsurerId = userDetail.UserId
+                };
+                obj.AddInsurerDetails(insert);
+            }
+            else if (userDetail.Role.Equals("broker"))
+            {
+                BrokerDetail insert = new BrokerDetail
+                {
+                    BrokerId = userDetail.UserId
+                };
+                obj.AddBrokerDetails(insert);
+            }
+            //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
+            return "notiness successful";
+        }
+        */
         // GET: api/UserDetails
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDetail>>> GetUserDetails()
@@ -54,7 +89,7 @@ namespace PresentationAPI.Controllers
 
         // PUT: api/UserDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        /*[HttpPut("{id}")]
         public async Task<IActionResult> PutUserDetail(string id, UserDetail userDetail)
         {
             if (id != userDetail.UserId)
@@ -83,34 +118,7 @@ namespace PresentationAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/UserDetails
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<UserDetail>> PostUserDetail(UserDetail userDetail)
-        {
-          if (_context.UserDetails == null)
-          {
-              return Problem("Entity set 'InsurewaveContext.UserDetails'  is null.");
-          }
-            _context.UserDetails.Add(userDetail);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserDetailExists(userDetail.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
-        }
+        
 
         // DELETE: api/UserDetails/5
         [HttpDelete("{id}")]
@@ -130,7 +138,7 @@ namespace PresentationAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
+        }*/
 
         private bool UserDetailExists(string id)
         {

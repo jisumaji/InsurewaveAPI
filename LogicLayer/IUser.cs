@@ -11,7 +11,8 @@ namespace LogicLayer
     public interface IUser
     {
         
-        public bool LoginUser(UserDetail userdetail);
+        //public bool LoginUser(UserDetail userdetail);
+        public bool LoginUser(string userId, string password);
         public void AddUser(UserDetail userdetail);
         public void AddBrokerDetails(BrokerDetail brokerdetail);
         public void AddInsurerDetails(InsurerDetail insurerdetail);
