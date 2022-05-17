@@ -35,31 +35,68 @@ namespace PresentationAPI.Controllers
         [HttpPost]
         public ActionResult<string> Register(Register register)
         {
-            UserDetail userDetail=new UserDetail() { UserId=register.UserId,Password=register.Password,FirstName=register.FirstName,
-            LastName=register.LastName,Gender=register.Gender,Role=register.Role,LicenseId=register.LicenseId};
-            if (userDetail.Role.Equals("insurer"))
+            if (obj.GetAllUserIds().Contains(register.UserId))
+                return "unavailable";
+            else
             {
-
-                InsurerDetail insert = new InsurerDetail
+                UserDetail userDetail = new UserDetail()
                 {
-                    InsurerId = userDetail.UserId
+                    UserId = register.UserId,
+                    Password = register.Password,
+                    FirstName = register.FirstName,
+                    LastName = register.LastName,
+                    Gender = register.Gender,
+                    Role = register.Role,
+                    LicenseId = register.LicenseId
                 };
-                obj.AddInsurerDetails(insert);
-            }
-            else if (userDetail.Role.Equals("broker"))
-            {
-                BrokerDetail insert = new BrokerDetail
+                if (userDetail.Role.Equals("insurer"))
                 {
-                    BrokerId = userDetail.UserId
-                };
-                obj.AddBrokerDetails(insert);
-            }
-            obj.AddUser(userDetail);
 
-            //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
-            return "notiness successful";
+                    InsurerDetail insert = new InsurerDetail
+                    {
+                        InsurerId = userDetail.UserId
+                    };
+                    obj.AddInsurerDetails(insert);
+                }
+                else if (userDetail.Role.Equals("broker"))
+                {
+                    BrokerDetail insert = new BrokerDetail
+                    {
+                        BrokerId = userDetail.UserId
+                    };
+                    obj.AddBrokerDetails(insert);
+                }
+                obj.AddUser(userDetail);
+
+                //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
+                return "successful";
+            }
         }
-        
+        //change password redirect to another page
+        [HttpPut("{UserId}")]
+        public ActionResult<string> ForgotPassword(string UserId, string pwd)
+        {
+            UserDetail ud = obj.GetUserById(UserId);
+            if (ud != null)
+                obj.ChangePassword(UserId, pwd);
+            else
+                return "invalidUserId";
+            return "passwordChanged";
+        }
+        //userdetails
+        [HttpGet("{id}")]
+        public ActionResult<UserDetail> Details(string id)
+        {
+            var userDetail =_context.UserDetails.FirstOrDefault(m => m.UserId == id);
+            /*
+            if (userDetail == null)
+            {
+                return "not found";
+            }
+            */
+            userDetail.Password = null;
+            return userDetail;
+        }
         /*[HttpPost]
         public async Task<ActionResult<UserDetail>> PostUserDetail(UserDetail userDetail)
         {
