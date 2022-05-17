@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataLayer.Models;
 using Microsoft.AspNetCore.Cors;
 using LogicLayer;
+using PresentationAPI.Models;
 
 namespace PresentationAPI.Controllers
 {
@@ -30,13 +31,12 @@ namespace PresentationAPI.Controllers
         {
             return obj.LoginUser(userId, password);
         }
-        /*
- 
-            //Register page
+        //Register page
         [HttpPost]
-        public ActionResult<string> Register(UserDetail userDetail)
+        public ActionResult<string> Register(Register register)
         {
-            obj.AddUser(userDetail);
+            UserDetail userDetail=new UserDetail() { UserId=register.UserId,Password=register.Password,FirstName=register.FirstName,
+            LastName=register.LastName,Gender=register.Gender,Role=register.Role,LicenseId=register.LicenseId};
             if (userDetail.Role.Equals("insurer"))
             {
 
@@ -54,10 +54,38 @@ namespace PresentationAPI.Controllers
                 };
                 obj.AddBrokerDetails(insert);
             }
+            obj.AddUser(userDetail);
+
             //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
             return "notiness successful";
         }
-        */
+        
+        /*[HttpPost]
+        public async Task<ActionResult<UserDetail>> PostUserDetail(UserDetail userDetail)
+        {
+          if (_context.UserDetails == null)
+          {
+              return Problem("Entity set 'InsurewaveContext.UserDetails'  is null.");
+          }
+            _context.UserDetails.Add(userDetail);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (UserDetailExists(userDetail.UserId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
+        }
         // GET: api/UserDetails
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDetail>>> GetUserDetails()
