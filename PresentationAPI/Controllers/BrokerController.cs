@@ -113,7 +113,7 @@ namespace PresentationAPI.Controllers
         public ActionResult<string> DeleteRequest(int assetId, string brokerId)//wrong assetId or brokerId gives exception
         {
             if(!buyer.AssetExists(assetId) || !user.UserDetailExists(brokerId))
-                return NoContent();
+                return "failure";
             ir.ChangeStatus(assetId, brokerId);
             return "success";
         }
