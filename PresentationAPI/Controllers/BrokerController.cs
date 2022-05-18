@@ -14,22 +14,24 @@ namespace PresentationAPI.Controllers
 
     public class BrokerController : ControllerBase
     {
-        IUser iu;
+        IUser user;
         IBroker obj;
         IPolicy policy;
         IRequest ir;
-        public BrokerController(IBroker _obj, IPolicy ip1, IRequest _ir, IUser _iu)
+        IBuyer buyer;
+        public BrokerController(IBroker _obj, IPolicy ip1, IRequest _ir, IUser _iu, IBuyer buyer)
         {
             obj = _obj;
             policy = ip1;
             ir = _ir;
-            iu = _iu;
+            user = _iu;
+            this.buyer = buyer;
         }
 
         [HttpGet("{brokerId}")]
         public ActionResult<List<PolicyDetail>> GetAllPolicies(string brokerId)
         {
-            if (!iu.UserDetailExists(brokerId))
+            if (!user.UserDetailExists(brokerId))
             {
                 return null;
             }
@@ -110,6 +112,8 @@ namespace PresentationAPI.Controllers
         [HttpDelete]
         public ActionResult<string> DeleteRequest(int assetId, string brokerId)//wrong assetId or brokerId gives exception
         {
+            if(!buyer.AssetExists(assetId) || !user.UserDetailExists(brokerId))
+                return NoContent();
             ir.ChangeStatus(assetId, brokerId);
             return "success";
         }
