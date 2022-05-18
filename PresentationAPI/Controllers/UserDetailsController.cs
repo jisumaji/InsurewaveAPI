@@ -18,24 +18,22 @@ namespace PresentationAPI.Controllers
 
     public class UserDetailsController : ControllerBase
     {
-        private readonly InsurewaveContext _context;
-        IUser obj;
-        public UserDetailsController(InsurewaveContext context , IUser obj)
+        IUser user;
+        public UserDetailsController( IUser obj)
         {
-            _context = context;
-            this.obj = obj; 
+            user = obj; 
         }
         //Login Page calls this
         [HttpGet("{userId}+{password}")]
         public ActionResult<bool> Login(string userId, string password)
         {
-            return obj.LoginUser(userId, password);
+            return user.LoginUser(userId, password);
         }
         //UserModel page
         [HttpPost]
         public ActionResult<string> Register(UserModel register)
         {
-            if (obj.GetAllUserIds().Contains(register.UserId))
+            if (user.GetAllUserIds().Contains(register.UserId))
                 return "unavailable";
             else
             {
@@ -56,7 +54,7 @@ namespace PresentationAPI.Controllers
                     {
                         InsurerId = userDetail.UserId
                     };
-                    obj.AddInsurerDetails(insert);
+                    user.AddInsurerDetails(insert);
                 }
                 else if (userDetail.Role.Equals("broker"))
                 {
@@ -64,9 +62,9 @@ namespace PresentationAPI.Controllers
                     {
                         BrokerId = userDetail.UserId
                     };
-                    obj.AddBrokerDetails(insert);
+                    user.AddBrokerDetails(insert);
                 }
-                obj.AddUser(userDetail);
+                user.AddUser(userDetail);
 
                 //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
                 return "successful";
@@ -76,24 +74,23 @@ namespace PresentationAPI.Controllers
         [HttpPut("{UserId}")]
         public ActionResult<string> ForgotPassword(string UserId, string pwd)
         {
-            UserDetail ud = obj.GetUserById(UserId);
+            UserDetail ud = user.GetUserById(UserId);
             if (ud != null)
-                obj.ChangePassword(UserId, pwd);
+                user.ChangePassword(UserId, pwd);
             else
                 return "invalidUserId";
             return "passwordChanged";
         }
         //userdetails
-        [HttpGet("{id}")]
-        public ActionResult<UserDetail> Details(string id)
+        [HttpGet("{userId}")]
+        public ActionResult<UserDetail> Details(string userId)
         {
-            if (!UserDetailExists(id))
+            if (!user.UserDetailExists(userId))
             {
                 return null;
             }
-            var userDetail = _context.UserDetails.FirstOrDefault(m => m.UserId == id);
-            var u = UserDetailExists(id);
-            userDetail.Password = null;
+            UserDetail userDetail = user.GetUserById(userId);
+            userDetail.Password = null;                                                  
             return userDetail;
         }
         [HttpPut("{id}")]
@@ -119,12 +116,11 @@ namespace PresentationAPI.Controllers
                 };
                 try
                 {
-                    _context.Update(u);
-                    _context.SaveChanges();
+                    user.EditUserDetails(u);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserDetailExists(r.UserId))
+                    if (!user.UserDetailExists(r.UserId))
                     {
                         return "not found";
                     }
@@ -136,120 +132,6 @@ namespace PresentationAPI.Controllers
                 return "success";
             }
             return "not found";
-        }
-
-
-        /*[HttpPost]
-        public async Task<ActionResult<UserDetail>> PostUserDetail(UserDetail userDetail)
-        {
-          if (_context.UserDetails == null)
-          {
-              return Problem("Entity set 'InsurewaveContext.UserDetails'  is null.");
-          }
-            _context.UserDetails.Add(userDetail);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserDetailExists(userDetail.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
-        }
-        // GET: api/UserDetails
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDetail>>> GetUserDetails()
-        {
-          if (_context.UserDetails == null)
-          {
-              return NotFound();
-          }
-            return await _context.UserDetails.ToListAsync();
-        }
-
-        // GET: api/UserDetails/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDetail>> GetUserDetail(string id)
-        {
-          if (_context.UserDetails == null)
-          {
-              return NotFound();
-          }
-            var userDetail = await _context.UserDetails.FindAsync(id);
-
-            if (userDetail == null)
-            {
-                return NotFound();
-            }
-
-            return userDetail;
-        }
-
-        // PUT: api/UserDetails/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> PutUserDetail(string id, UserDetail userDetail)
-        {
-            if (id != userDetail.UserId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(userDetail).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserDetailExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        
-
-        // DELETE: api/UserDetails/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserDetail(string id)
-        {
-            if (_context.UserDetails == null)
-            {
-                return NotFound();
-            }
-            var userDetail = await _context.UserDetails.FindAsync(id);
-            if (userDetail == null)
-            {
-                return NotFound();
-            }
-
-            _context.UserDetails.Remove(userDetail);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }*/
-
-        private bool UserDetailExists(string id)
-        {
-            return (_context.UserDetails?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }
