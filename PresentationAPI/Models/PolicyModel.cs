@@ -5,7 +5,6 @@ namespace PresentationAPI.Models;
 
 public class PolicyModel
 {
-    public int PolicyId { get; set; }
     public int AssetId { get; set; }
     public string InsurerId { get; set; } = null!;
     public string BrokerId { get; set; } = null!;
