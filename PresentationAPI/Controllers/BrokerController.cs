@@ -38,8 +38,10 @@ namespace PresentationAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> AddPolicy(int assetid, PolicyModel p)
+        public ActionResult<string> AddPolicy(int assetid, PolicyModel p)//query id and parameter id different gives error
         {
+            if (assetid != p.AssetId)
+                return NotFound();
             if (ModelState.IsValid)
             {
                 PolicyDetail policyDetail = new PolicyDetail()
@@ -106,11 +108,10 @@ namespace PresentationAPI.Controllers
             return br;
         }
         [HttpDelete]
-        public ActionResult<string> DeleteRequest(int assetId, string brokerId)
+        public ActionResult<string> DeleteRequest(int assetId, string brokerId)//wrong assetId or brokerId gives exception
         {
             ir.ChangeStatus(assetId, brokerId);
             return "success";
         }
-
     }
 }
