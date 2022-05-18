@@ -60,10 +60,10 @@ namespace PresentationAPI.Controllers
                 Broker r = new();
                 r.ChangeReviewStatus(p.AssetId, p.BrokerId);
                 policy.AddPolicy(policyDetail);
-                return "successfully added";
+                return "success";
             }
 
-            return "not found";
+            return "notFound";
         }
         
         [HttpPut]
@@ -94,9 +94,9 @@ namespace PresentationAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                return "not found";
+                return "notFound";
             }
-            return "successfully edited";
+            return "success";
         }
         [HttpGet]
         public ActionResult<List<BrokerRequest>> CurrentRequests(string brokerId)
@@ -109,7 +109,7 @@ namespace PresentationAPI.Controllers
         public ActionResult<string> DeleteRequest(int assetId, string brokerId)
         {
             ir.ChangeStatus(assetId, brokerId);
-            return "successfully deleted";
+            return "success";
         }
 
     }

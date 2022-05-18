@@ -68,12 +68,13 @@ namespace PresentationAPI.Controllers
             }
         }
         //change password redirect to another page
-        [HttpPut("{UserId}")]
-        public ActionResult<string> ForgotPassword(string UserId, string pwd)
+        [Route("[action]/{userId}")]
+        [HttpPut]
+        public ActionResult<string> ForgotPassword(string userId, string pwd)
         {
-            UserDetail ud = user.GetUserById(UserId);
+            UserDetail ud = user.GetUserById(userId);
             if (ud != null)
-                user.ChangePassword(UserId, pwd);
+                user.ChangePassword(userId, pwd);
             else
                 return "invalidUserId";
             return "success";
