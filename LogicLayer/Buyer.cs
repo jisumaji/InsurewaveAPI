@@ -77,5 +77,36 @@ namespace LogicLayer
             db.PaymentBuyers.Update(b_pay);
             db.SaveChanges();
         }
+        public List<Pay> GetPayments(string userId)
+        {
+            var q = (from ba in db.BuyerAssets
+                     join pa in db.PolicyDetails on ba.AssetId equals pa.AssetId
+                     join id in db.UserDetails on ba.UserId equals id.UserId
+                     join payb in db.PaymentBuyers on pa.PolicyId equals payb.PolicyId
+                     where ba.UserId == userId
+                     orderby id.UserId
+                     select new
+                     {
+                         PolID = payb.PolicyId,
+                         Name = ba.AssetName,
+                         LS = pa.LumpSum,
+                         P = pa.Premium,
+                         Status = payb.PaidStatus
+                     }).ToList();
+            List<Pay> result = new List<Pay>();
+            foreach (var x in q)
+            {
+                Pay p = new Pay()
+                {
+                    PolicyId = x.PolID,
+                    AssetName = x.Name,
+                    LumpSum = x.LS,
+                    Premium = x.P,
+                    PaidStatus = x.Status
+                };
+                result.Add(p);
+            }
+            return result;
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LogicLayer;
 namespace LogicLayer
 {
     public interface IBuyer
@@ -19,6 +19,6 @@ namespace LogicLayer
         public void EditAsset(BuyerAsset b);
         public void EditAssetRequest(int assetid);
         public void ChangePaymentStatus(int policyid);
-
+        public List<Pay> GetPayments(string userId);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PresentationAPI.Models
 {
-    public class Register
+    public class UserModel
     {        
         public string UserId { get; set; } = null!;
         public string Password { get; set; } = null!;

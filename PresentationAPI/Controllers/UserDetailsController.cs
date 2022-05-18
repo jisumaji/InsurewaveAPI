@@ -31,9 +31,9 @@ namespace PresentationAPI.Controllers
         {
             return obj.LoginUser(userId, password);
         }
-        //Register page
+        //UserModel page
         [HttpPost]
-        public ActionResult<string> Register(Register register)
+        public ActionResult<string> Register(UserModel register)
         {
             if (obj.GetAllUserIds().Contains(register.UserId))
                 return "unavailable";
@@ -87,16 +87,58 @@ namespace PresentationAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<UserDetail> Details(string id)
         {
-            var userDetail =_context.UserDetails.FirstOrDefault(m => m.UserId == id);
-            /*
-            if (userDetail == null)
+            if (!UserDetailExists(id))
             {
-                return "not found";
+                return null;
             }
-            */
+            var userDetail = _context.UserDetails.FirstOrDefault(m => m.UserId == id);
+            var u = UserDetailExists(id);
             userDetail.Password = null;
             return userDetail;
         }
+        [HttpPut("{id}")]
+        public ActionResult<string> Edit(string id, UserModel r)
+        {
+            if (id != r.UserId)
+            {
+                return "not found";
+            }
+
+            if (ModelState.IsValid)
+            {
+                UserDetail u = new UserDetail()
+                {
+                    UserId = r.UserId,
+                    Password = r.Password,
+                    FirstName = r.FirstName,
+                    LastName = r.LastName,
+                    Gender = r.Gender,
+                    Role = r.Role,
+                    LicenseId = r.LicenseId
+
+                };
+                try
+                {
+                    _context.Update(u);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserDetailExists(r.UserId))
+                    {
+                        return "not found";
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return "success";
+            }
+            return "not found";
+        }
+
+
         /*[HttpPost]
         public async Task<ActionResult<UserDetail>> PostUserDetail(UserDetail userDetail)
         {
