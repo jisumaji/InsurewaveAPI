@@ -2,7 +2,6 @@
 {
     public class AssetModel
     {
-        public int AssetId { get; set; }
         public string UserId { get; set; } = null!;
         public int? CountryId { get; set; }
         public string AssetName { get; set; } = null!;

@@ -33,12 +33,14 @@ namespace PresentationAPI.Controllers
         {
             return db.BuyerAssets.Any(e => e.AssetId == assetId);
         }
-        [HttpGet("{userId}")]
+        [Route("[action]/{userId}")]
+        [HttpGet]
         public ActionResult<List<BuyerAsset>> DisplayAssets(string userId)
         {
             List<BuyerAsset> assets = buyer.GetAllAssets(userId);
             return assets;
         }
+        [Route("[action]")]
         [HttpPost]
         public ActionResult<string> AddAssets(AssetModel buyerAsset)
         {
@@ -59,20 +61,22 @@ namespace PresentationAPI.Controllers
             else
                 return "invalidUserId";
         }
-        [HttpDelete("{assetId}")]
+        [Route("[action]/{assetId}")]
+        [HttpDelete]
         public ActionResult<string> DeleteAsset(int assetId)
         {
             buyer.DeleteAsset(assetId);
             return "deleted";
         }
+        [Route("[action]/{assetId}")]
         [HttpPut]
-        public ActionResult<string> EditAsset(AssetModel asset)
+        public ActionResult<string> EditAsset(int assetId,AssetModel asset)
         {
-            if (!AssetExists(asset.AssetId))
+            if (!AssetExists(assetId))
                 return "notFound";
             BuyerAsset buyerAsset = new BuyerAsset()
             {
-                AssetId = asset.AssetId,
+                AssetId = assetId,
                 UserId = asset.UserId,
                 CountryId = asset.CountryId,
                 AssetName = asset.AssetName,
@@ -90,18 +94,21 @@ namespace PresentationAPI.Controllers
             }
             return "success";
         }
-        [HttpGet("{assetIdForPolicy}")]
-        public ActionResult<List<PolicyDetail>> ViewPolicyForAsset(int assetIdForPolicy)
+        [Route("[action]/{assetId}")]
+        [HttpGet]
+        public ActionResult<List<PolicyDetail>> ViewPolicyForAsset(int assetId)
         {
-            List<PolicyDetail> policyDetails = policy.GetAllPoliciesAsset(assetIdForPolicy);
+            List<PolicyDetail> policyDetails = policy.GetAllPoliciesAsset(assetId);
             return policyDetails;
         }
+        [Route("[action]")]
         [HttpGet]
         public ActionResult<List<BrokerDetail>> BrokersAvalable()
         {
             return broker.GetAllBrokers();
         }
-        [HttpGet("assetId+brokerId")]
+        [Route("[action]/{assetId}/{brokerId}")]
+        [HttpGet]
         public ActionResult<string> SendRequest(int assetId, string brokerId)
         {
             BrokerRequest brokerRequest = new BrokerRequest();
@@ -119,18 +126,21 @@ namespace PresentationAPI.Controllers
             } 
             return "success";
         }
-        [HttpGet("id")]
+        [Route("[action]/{userId}")]
+        [HttpGet]
         public ActionResult<List<Pay>> Payments(string userId)
         {
             return buyer.GetPayments(userId);
         }
-        [HttpGet("policyid")]
+        [Route("[action]/{policyId}")]
+        [HttpGet]
         public ActionResult<PolicyDetail> GetPolicyById(int policyId)
         {
-            return policy.GetPolicyById(policyId);
+            return policy.GetPolicyByPolId(policyId);
         }
-        [HttpGet("policyId")]
-        public ActionResult<string> Payment(int policyId)
+        [Route("[action]/{policyId}")]
+        [HttpGet]
+        public ActionResult<string> PaymentDone(int policyId)
         {
             try
             {
