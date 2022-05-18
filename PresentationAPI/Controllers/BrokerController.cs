@@ -14,21 +14,22 @@ namespace PresentationAPI.Controllers
 
     public class BrokerController : ControllerBase
     {
-
-        InsurewaveContext _context;
+        IUser iu;
         IBroker obj;
-        IPolicy ip;
-        public BrokerController(IBroker _obj, IPolicy ip1)
+        IPolicy policy;
+        IRequest ir;
+        public BrokerController(IBroker _obj, IPolicy ip1, IRequest _ir, IUser _iu)
         {
-            _context = new InsurewaveContext();
             obj = _obj;
-            ip = ip1;
+            policy = ip1;
+            ir = _ir;
+            iu = _iu;
         }
 
         [HttpGet("{brokerId}")]
         public ActionResult<List<PolicyDetail>> GetAllPolicies(string brokerId)
         {
-            if (!UserDetailExists(brokerId))
+            if (!iu.UserDetailExists(brokerId))
             {
                 return null;
             }
@@ -58,21 +59,18 @@ namespace PresentationAPI.Controllers
                 };
                 Broker r = new();
                 r.ChangeReviewStatus(p.AssetId, p.BrokerId);
-                _context.Add(policyDetail);
-                _context.SaveChanges();
-                return "success";
+                policy.AddPolicy(policyDetail);
+                return "successfully added";
             }
-            return "failure";
+
+            return "not found";
         }
-        private bool PolicyExists(int policyId)
-        {
-            return _context.PolicyDetails.Any(e => e.PolicyId == policyId);
-        }
+        
         [HttpPut]
         public ActionResult<string> EditPolicy(int policyid, PolicyModel p)
         {
 
-            if (!PolicyExists(policyid))
+            if (!policy.PolicyExists(policyid))
                 return "notFound";
 
             PolicyDetail policyDetail = new PolicyDetail()
@@ -92,14 +90,13 @@ namespace PresentationAPI.Controllers
             };
             try
             {
-                _context.Update(policyDetail);
-                _context.SaveChangesAsync();
+                policy.EditPolicy(policyDetail);
             }
             catch (DbUpdateConcurrencyException)
             {
-                return "failure";
+                return "not found";
             }
-            return "success";
+            return "successfully edited";
         }
         [HttpGet]
         public ActionResult<List<BrokerRequest>> CurrentRequests(string brokerId)
@@ -109,16 +106,11 @@ namespace PresentationAPI.Controllers
             return br;
         }
         [HttpDelete]
-        public ActionResult<string> DeleteRequest(int requestId)
+        public ActionResult<string> DeleteRequest(int assetId, string brokerId)
         {
-            BrokerRequest br = _context.BrokerRequests.Where(a => a.RequestId == requestId).FirstOrDefault();
-            br.ReviewStatus = "yes";
-            _context.SaveChanges();
-            return "success";
+            ir.ChangeStatus(assetId, brokerId);
+            return "successfully deleted";
         }
-        private bool UserDetailExists(string id)
-        {
-            return (_context.UserDetails?.Any(e => e.UserId == id)).GetValueOrDefault();
-        }
+
     }
 }

@@ -74,5 +74,9 @@ namespace LogicLayer
         {
             return db.BuyerAssets.Where(a => a.AssetId == id).Select(a=>a.AssetName).FirstOrDefault();
         }
+        public bool PolicyExists(int policyId)
+        {
+            return db.PolicyDetails.Any(e => e.PolicyId == policyId);
+        }
     }
 }

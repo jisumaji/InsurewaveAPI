@@ -24,7 +24,7 @@ namespace PresentationAPI.Controllers
             user = obj; 
         }
         //Login Page calls this
-        [HttpGet("{userId}+{password}")]
+        [HttpGet("{userId}/{password}")]
         public ActionResult<bool> Login(string userId, string password)
         {
             return user.LoginUser(userId, password);
@@ -47,9 +47,9 @@ namespace PresentationAPI.Controllers
                     Role = register.Role,
                     LicenseId = register.LicenseId
                 };
+                user.AddUser(userDetail);
                 if (userDetail.Role.Equals("insurer"))
                 {
-
                     InsurerDetail insert = new InsurerDetail
                     {
                         InsurerId = userDetail.UserId
@@ -64,10 +64,7 @@ namespace PresentationAPI.Controllers
                     };
                     user.AddBrokerDetails(insert);
                 }
-                user.AddUser(userDetail);
-
-                //return CreatedAtAction("GetUserDetail", new { id = userDetail.UserId }, userDetail);
-                return "successful";
+                return "success";
             }
         }
         //change password redirect to another page
@@ -79,7 +76,7 @@ namespace PresentationAPI.Controllers
                 user.ChangePassword(UserId, pwd);
             else
                 return "invalidUserId";
-            return "passwordChanged";
+            return "success";
         }
         //userdetails
         [HttpGet("{userId}")]
@@ -98,7 +95,7 @@ namespace PresentationAPI.Controllers
         {
             if (id != r.UserId)
             {
-                return "not found";
+                return "notFound";
             }
 
             if (ModelState.IsValid)
@@ -122,7 +119,7 @@ namespace PresentationAPI.Controllers
                 {
                     if (!user.UserDetailExists(r.UserId))
                     {
-                        return "not found";
+                        return "notFound";
                     }
                     else
                     {
@@ -131,7 +128,7 @@ namespace PresentationAPI.Controllers
                 }
                 return "success";
             }
-            return "not found";
+            return "notFound";
         }
     }
 }

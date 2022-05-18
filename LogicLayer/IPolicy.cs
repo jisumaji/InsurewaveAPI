@@ -19,5 +19,6 @@ namespace LogicLayer
         public List<PolicyDetail> GetAllPoliciesAsset(int assetid);
         public PolicyDetail GetPolicyByPolId(int polid);
         public string GetAssetName(int id);
+        public bool PolicyExists(int policyId);
     }
 }
