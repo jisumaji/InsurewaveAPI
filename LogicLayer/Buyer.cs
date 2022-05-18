@@ -19,7 +19,10 @@ namespace LogicLayer
             db.BuyerAssets.Add(buyerasset);
             db.SaveChanges();
         }
-        
+        public bool AssetExists(int assetId)
+        {
+            return db.BuyerAssets.Any(e => e.AssetId == assetId);
+        }
         public List<BuyerAsset> GetAllAssets(string id)
         {
             List<BuyerAsset> asset = db.BuyerAssets.Where(a => a.UserId == id).ToList();

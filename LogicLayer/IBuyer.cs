@@ -20,5 +20,6 @@ namespace LogicLayer
         public void EditAssetRequest(int assetid);
         public void ChangePaymentStatus(int policyid);
         public List<Pay> GetPayments(string userId);
+        public bool AssetExists(int assetId);
     }
 }

@@ -15,15 +15,10 @@ namespace LogicLayer
         {
             db = new InsurewaveContext();
         }
-        /*public bool LoginUser(UserDetail userdetail)
+        public bool UserDetailExists(string id)
         {
-            object temp = db.UserDetails.Where(u => (u.UserId== userdetail.UserId && u.Password == userdetail.Password)).FirstOrDefault();
-            if (temp != null)
-                return true;
-            else
-                return false;
-
-        }*/
+            return (db.UserDetails?.Any(e => e.UserId == id)).GetValueOrDefault();
+        }
         public bool LoginUser(string userId,string password)
         {
             object temp = db.UserDetails.Where(u => u.UserId == userId && u.Password == password).FirstOrDefault();

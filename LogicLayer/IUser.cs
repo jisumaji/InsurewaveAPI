@@ -20,5 +20,6 @@ namespace LogicLayer
         public void EditUserDetails(UserDetail ud);
         public void ChangePassword(string Uname, string pwd);
         public List<string> GetAllUserIds();
+        public bool UserDetailExists(string id);
     }
 }

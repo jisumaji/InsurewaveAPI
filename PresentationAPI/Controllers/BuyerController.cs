@@ -16,22 +16,14 @@ namespace PresentationAPI.Controllers
         IRequest request;
         IBroker broker;
         IPolicy policy;
-        InsurewaveContext db;
-        public BuyerController(IBuyer _buyer, IRequest _request, IBroker _broker, IPolicy _policy, InsurewaveContext _db)
+        IUser user;
+        public BuyerController(IBuyer _buyer, IRequest _request, IBroker _broker, IPolicy _policy,IUser _user)
         {
             buyer = _buyer;
             request = _request;
             broker = _broker;
             policy = _policy;
-            db = _db;
-        }
-        private bool UserDetailExists(string id)
-        {
-            return (db.UserDetails?.Any(e => e.UserId == id)).GetValueOrDefault();
-        }
-        private bool AssetExists(int assetId)
-        {
-            return db.BuyerAssets.Any(e => e.AssetId == assetId);
+            user = _user;
         }
         [Route("[action]/{userId}")]
         [HttpGet]
@@ -44,7 +36,7 @@ namespace PresentationAPI.Controllers
         [HttpPost]
         public ActionResult<string> AddAssets(AssetModel buyerAsset)
         {
-            if (UserDetailExists(buyerAsset.UserId))
+            if (user.UserDetailExists(buyerAsset.UserId))
             {
                 BuyerAsset asset = new BuyerAsset()
                 {
@@ -72,7 +64,7 @@ namespace PresentationAPI.Controllers
         [HttpPut]
         public ActionResult<string> EditAsset(int assetId,AssetModel asset)
         {
-            if (!AssetExists(assetId))
+            if (!buyer.AssetExists(assetId))
                 return "notFound";
             BuyerAsset buyerAsset = new BuyerAsset()
             {
