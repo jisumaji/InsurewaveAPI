@@ -24,12 +24,12 @@ namespace PresentationAPI.Controllers
             List<PolicyDetail> policyDetails = insurer.GetAllPolicies(insurerId);
             return policyDetails;
         }
-        [Route("[action]/{insurerId}")]
+        /*[Route("[action]/{insurerId}")]
         [HttpGet]
         public ActionResult CurrentRequests()
         {
 
-        }
+        }*/
         /*
         public async Task<IActionResult> CurrentRequests()
         {

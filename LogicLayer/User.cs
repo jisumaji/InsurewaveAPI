@@ -19,13 +19,13 @@ namespace LogicLayer
         {
             return (db.UserDetails?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
-        public bool LoginUser(string userId,string password)
+        public string LoginUser(string userId,string password)
         {
-            object temp = db.UserDetails.Where(u => u.UserId == userId && u.Password == password).FirstOrDefault();
+            UserDetail temp = db.UserDetails.Where(u => u.UserId == userId && u.Password == password).FirstOrDefault();
             if (temp != null)
-                return true;
+                return temp.Role;
             else
-                return false;
+                return "false";
 
         }
         public void AddUser(UserDetail userdetail)

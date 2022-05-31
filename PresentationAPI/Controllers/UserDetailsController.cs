@@ -25,7 +25,7 @@ namespace PresentationAPI.Controllers
         }
         //Login Page calls this
         [HttpGet("{userId}/{password}")]
-        public ActionResult<bool> Login(string userId, string password)
+        public ActionResult<string> Login(string userId, string password)
         {
             return user.LoginUser(userId, password);
         }
