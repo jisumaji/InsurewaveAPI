@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-var connectionString = builder.Configuration.GetConnectionString("Constr");
+/*var connectionString = builder.Configuration.GetConnectionString("Constr");
 builder.Services.AddDbContext<InsurewaveContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString));*/
 
 builder.Services.AddScoped<IUser, User>();
 builder.Services.AddScoped<IBuyer, Buyer>();
