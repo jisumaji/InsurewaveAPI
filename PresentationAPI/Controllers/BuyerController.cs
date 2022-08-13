@@ -17,13 +17,15 @@ namespace PresentationAPI.Controllers
         IBroker broker;
         IPolicy policy;
         IUser user;
-        public BuyerController(IBuyer _buyer, IRequest _request, IBroker _broker, IPolicy _policy,IUser _user)
+        ICountry country;
+        public BuyerController(ICountry _country,IBuyer _buyer, IRequest _request, IBroker _broker, IPolicy _policy,IUser _user)
         {
             buyer = _buyer;
             request = _request;
             broker = _broker;
             policy = _policy;
             user = _user;
+            country = _country;
         }
         [Route("[action]/{userId}")]
         [HttpGet]
@@ -143,6 +145,12 @@ namespace PresentationAPI.Controllers
                 return "failure";
             }
             return "success";
+        }
+        [Route("[action]")]
+        [HttpGet]
+        public ActionResult<List<CurrencyConversion>> GetCountries()
+        {
+            return country.GetCountries();
         }
     }
 }

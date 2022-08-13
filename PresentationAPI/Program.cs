@@ -17,6 +17,7 @@ builder.Services.AddScoped<IBroker, Broker>();
 builder.Services.AddScoped<IInsurer, Insurer>();
 builder.Services.AddScoped<IPolicy, Policy>();
 builder.Services.AddScoped<IRequest, Request>();
+builder.Services.AddScoped<ICountry, Country>();
 
 builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 {
